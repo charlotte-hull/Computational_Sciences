@@ -46,17 +46,18 @@ def evaluate_state_at_time(time: float, initial_state: State, constants: Constan
     velocity = initial_state.velocity - constants.gravitation * time
     return State(position, velocity)
 # %%
-time_grid = np.linspace(0, 10, 100)
-initial_state = State(position=10.0, velocity=0.0)
-constants = Constants(mass=1.0, gravitation=9.81)
-trajectory = evaluate_states_at_times(time_grid, initial_state, constants)
+if __name__ == "__main__":
+    time_grid = np.linspace(0, 10, 100)
+    initial_state = State(position=10.0, velocity=0.0)
+    constants = Constants(mass=1.0, gravitation=9.81)
+    trajectory = evaluate_states_at_times(time_grid, initial_state, constants)
 
-plt.plot(time_grid, trajectory.get_positions(), label='Position')
-plt.plot(time_grid, trajectory.get_velocities(), label='Velocity')
-plt.xlabel(r'Time in $s$')
-plt.ylabel(r'Position in $m$ / Velocity in $m/s$')
-plt.title('Trajectory of a Point Mass')
-plt.grid(True)
-plt.legend()
-plt.show()
+    plt.plot(time_grid, trajectory.get_positions(), label='Position')
+    plt.plot(time_grid, trajectory.get_velocities(), label='Velocity')
+    plt.xlabel(r'Time in $s$')
+    plt.ylabel(r'Position in $m$ / Velocity in $m/s$')
+    plt.title('Trajectory of a Point Mass')
+    plt.grid(True)
+    plt.legend()
+    plt.show()
 # %%

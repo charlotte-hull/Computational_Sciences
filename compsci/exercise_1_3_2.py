@@ -26,20 +26,21 @@ def update_state(dt: float, state: State, constants: Constants):
     state.velocity = state.velocity - constants.gravitation * dt
     return state
 # %%
-time_grid = np.linspace(0, 10, 100)
-initial_state = State(position=10.0, velocity=0.0)
-constants = Constants(mass=1.0, gravitation=9.81)
-trajectory_with_update = evaluate_states_at_times_with_update(time_grid, initial_state, constants)
-#%%
-plt.plot(time_grid, trajectory_with_update.get_positions(), label='Position (update)', linestyle='-')
-plt.plot(time_grid, trajectory_with_update.get_velocities(), label='Velocity (update)', linestyle='-')
-plt.plot(time_grid, evaluate_states_at_times(time_grid, initial_state, constants).get_positions(), label='Position', linestyle='--')
-plt.plot(time_grid, evaluate_states_at_times(time_grid, initial_state, constants).get_velocities(), label='Velocity', linestyle='--')
+if __name__ == "__main__":
+    time_grid = np.linspace(0, 10, 100)
+    initial_state = State(position=10.0, velocity=0.0)
+    constants = Constants(mass=1.0, gravitation=9.81)
+    trajectory_with_update = evaluate_states_at_times_with_update(time_grid, initial_state, constants)
 
-plt.xlabel(r'Time in $s$')
-plt.ylabel(r'Position in $m$ / Velocity in $m/s$')
-plt.title('Trajectory of a Point Mass')
-plt.grid(True)
-plt.legend()
-plt.show()
+    plt.plot(time_grid, trajectory_with_update.get_positions(), label='Position (update)', linestyle='-')
+    plt.plot(time_grid, trajectory_with_update.get_velocities(), label='Velocity (update)', linestyle='-')
+    plt.plot(time_grid, evaluate_states_at_times(time_grid, initial_state, constants).get_positions(), label='Position', linestyle='--')
+    plt.plot(time_grid, evaluate_states_at_times(time_grid, initial_state, constants).get_velocities(), label='Velocity', linestyle='--')
+
+    plt.xlabel(r'Time in $s$')
+    plt.ylabel(r'Position in $m$ / Velocity in $m/s$')
+    plt.title('Trajectory of a Point Mass')
+    plt.grid(True)
+    plt.legend()
+    plt.show()
 # %%
