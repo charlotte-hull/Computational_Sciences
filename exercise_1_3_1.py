@@ -20,9 +20,9 @@ class Constants:
         self.gravitation = gravitation
 
 class Trajectory:
-    def __init__(self, positions: np.ndarray, velocities: np.ndarray):
-        self.positions = positions
-        self.velocities = velocities
+    def __init__(self, initial_state: State):
+        self.positions = np.array([initial_state.position])
+        self.velocities = np.array([initial_state.velocity])
 
     def append_state(self, state: State):
         self.positions = np.append(self.positions, state.position)
@@ -38,7 +38,7 @@ class Trajectory:
         return np.copy(self.velocities)
 
 def evaluate_states_at_times(time_grid: np.ndarray, initial_state: State, constants: Constants):
-    trajectory = Trajectory(np.array([initial_state.position]), np.array([initial_state.velocity]))
+    trajectory = Trajectory(initial_state)
     for t in time_grid:
         trajectory.append_state(evaluate_state_at_time(t, initial_state, constants))
     return trajectory
