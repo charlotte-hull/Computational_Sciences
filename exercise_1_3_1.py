@@ -21,25 +21,23 @@ class Constants:
 
 class Trajectory:
     def __init__(self, initial_state: State):
-        self.positions = np.array([initial_state.position])
-        self.velocities = np.array([initial_state.velocity])
+        self.states = [initial_state]
 
     def append_state(self, state: State):
-        self.positions = np.append(self.positions, state.position)
-        self.velocities = np.append(self.velocities, state.velocity)
+        self.states.append(state)
 
     def get_state_at_step(self, step: int):
-        return State(self.positions[step], self.velocities[step])
+        return self.states[step]
 
     def get_positions(self):
-        return np.copy(self.positions)
+        return np.array([state.position for state in self.states])
 
     def get_velocities(self):
-        return np.copy(self.velocities)
-
+        return np.array([state.velocity for state in self.states])
+#%%
 def evaluate_states_at_times(time_grid: np.ndarray, initial_state: State, constants: Constants):
     trajectory = Trajectory(initial_state)
-    for t in time_grid:
+    for t in time_grid[1:]:
         trajectory.append_state(evaluate_state_at_time(t, initial_state, constants))
     return trajectory
 
@@ -53,8 +51,8 @@ initial_state = State(position=10.0, velocity=0.0)
 constants = Constants(mass=1.0, gravitation=9.81)
 trajectory = evaluate_states_at_times(time_grid, initial_state, constants)
 
-plt.plot(time_grid, trajectory.get_positions()[1:], label='Position')
-plt.plot(time_grid, trajectory.get_velocities()[1:], label='Velocity')
+plt.plot(time_grid, trajectory.get_positions(), label='Position')
+plt.plot(time_grid, trajectory.get_velocities(), label='Velocity')
 plt.xlabel(r'Time in $s$')
 plt.ylabel(r'Position in $m$ / Velocity in $m/s$')
 plt.title('Trajectory of a Point Mass')
