@@ -25,7 +25,8 @@ class fibonacci:
             self.f_k_minus2 = 0
 
 
-n = 6
+n = 10
 fibonacci=fibonacci()
 print(fibonacci.evaluate(n))
+fibonacci.reset()
    
