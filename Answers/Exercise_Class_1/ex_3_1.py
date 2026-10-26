@@ -1,4 +1,3 @@
-#from IPython.display import display, Latex
 import numpy as np
 import matplotlib.pyplot as plt
 
