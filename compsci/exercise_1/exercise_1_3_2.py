@@ -9,7 +9,7 @@ and gravitation and plot the graph of the solution.
 import matplotlib.pyplot as plt
 import numpy as np
 
-from compsci.exercise_1_3_1 import State, Constants, Trajectory, evaluate_states_at_times
+from compsci.exercise_1.exercise_1_3_1 import State, Constants, Trajectory, evaluate_states_at_times
 # %%
 def evaluate_states_at_times_with_update(time_grid: np.ndarray, initial_state: State, constants: Constants):
     trajectory = Trajectory(State(initial_state.position, initial_state.velocity))
