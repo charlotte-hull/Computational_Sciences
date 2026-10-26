@@ -7,7 +7,7 @@ Save your changes in your forked remote repository.
 import matplotlib.pyplot as plt
 import numpy as np
 
-from compsci.gravitation import State, Constants, evaluate_states_at_times, evaluate_states_at_times_with_update
+from compsci.exercise_1.gravitation import State, Constants, evaluate_states_at_times, evaluate_states_at_times_with_update
 # %%
 time_grid = np.linspace(0, 10, 100)
 initial_state = State(position=10.0, velocity=0.0)

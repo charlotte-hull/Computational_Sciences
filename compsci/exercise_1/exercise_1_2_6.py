@@ -6,8 +6,8 @@ exercise_1_2_4.py and compare all three implemented approaches in one figure.
 #%%
 import matplotlib.pyplot as plt
 
-from compsci.exercise_1_2_3 import fibonacci_naive, fibonacci
-from compsci.exercise_1_2_4 import Fibonacci
+from compsci.exercise_1.exercise_1_2_3 import fibonacci_naive, fibonacci
+from compsci.exercise_1.exercise_1_2_4 import Fibonacci
 # %%
 fibonacci_class = Fibonacci()
 
