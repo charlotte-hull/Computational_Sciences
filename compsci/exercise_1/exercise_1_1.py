@@ -6,7 +6,7 @@ import numpy
 import scipy
 import matplotlib.pyplot
 
-import compsci.exercise_1_2_3
+import compsci.exercise_1.exercise_1_2_3
 
 if __name__ == "__main__":
     print("Hello World!")
