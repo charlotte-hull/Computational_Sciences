@@ -13,11 +13,9 @@ from compsci.exercise_3.data import State
 # %%
 def apply_lennard_jones_forces_to_particles(state: State):
     # TODO: implement the application of the Lennard-Jones force to the particles stored in state
-    return 
 
 def compute_lennard_jones_radial_force(distance: float):
     # TODO: implement the calculation of the Lennard-Jones radial force for a given distance
-    return # force
 # %%
 if __name__ == "__main__":
     # Example usage
