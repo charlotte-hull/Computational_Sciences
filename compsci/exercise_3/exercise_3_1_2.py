@@ -78,3 +78,25 @@ class Explicit_euler(Integrator):
         state.velocity += state.force * self.time_step
         self.reset_forces(state)
 # %%
+class Heuns_method(Integrator):
+    def __init__(self, time_step: float):
+        super().__init__(time_step)
+
+    def integrate(self, state: State):
+        # Update forces of the current state before integration
+        self.apply_forces(state)
+
+        # Compute intermediate state using Euler step
+        intermediate_state = State(np.copy(state.position), np.copy(state.velocity), np.copy(state.force))
+        intermediate_state.position += intermediate_state.velocity * self.time_step
+        intermediate_state.velocity += intermediate_state.force * self.time_step
+        self.reset_forces(intermediate_state)
+
+        # Update forces of intermediate state at new positions
+        self.apply_forces(intermediate_state)
+
+        # Update original state using average of initial and intermediate forces and velocities
+        state.position += 0.5 * self.time_step * (state.velocity + intermediate_state.velocity)
+        state.velocity += 0.5 * self.time_step * (state.force + intermediate_state.force)
+        self.reset_forces(state)
+# %%
