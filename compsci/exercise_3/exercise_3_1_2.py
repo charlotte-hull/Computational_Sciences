@@ -7,7 +7,6 @@ Implement that time integrator going through the entire development cycle
 '''
 # %%
 import numpy as np
-import matplotlib.pyplot as plt
 # %%
 class State:
     def __init__(self, position: np.ndarray, velocity: np.ndarray, force = None):
@@ -24,22 +23,6 @@ class State:
         else:
             assert(force.shape == position.shape) # assert that force has the same shape as position
             self.force = np.copy(force)
-# %%
-class Trajectory:
-    def __init__(self, initial_state: State):
-        self.states = [initial_state]
-
-    def append_state(self, state: State):
-        self.states.append(state)
-
-    def get_state_at_step(self, step: int):
-        return self.states[step]
-
-    def get_positions(self):
-        return np.array([state.position for state in self.states])
-
-    def get_velocities(self):
-        return np.array([state.velocity for state in self.states])
 # %%
 def apply_lennard_jones_forces_to_particles(state: State):
     for idx in range(len(state.position)):
