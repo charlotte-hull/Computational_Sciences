@@ -69,9 +69,6 @@ class Integrator:
         state.force.fill(0)  # Reset forces after integration
 # %%
 class Explicit_euler(Integrator):
-    def __init__(self, time_step: float):
-        super().__init__(time_step)
-
     def integrate(self, state: State):
         self.apply_forces(state)
         state.position += state.velocity * self.time_step
@@ -79,9 +76,6 @@ class Explicit_euler(Integrator):
         self.reset_forces(state)
 # %%
 class Heuns_method(Integrator):
-    def __init__(self, time_step: float):
-        super().__init__(time_step)
-
     def integrate(self, state: State):
         # Update forces of the current state before integration
         self.apply_forces(state)
