@@ -76,21 +76,46 @@ class Explicit_euler(Integrator):
         self.reset_forces(state)
 # %%
 class Heuns_method(Integrator):
+    def compute_intermediate_state(self, state: State):
+        intermediate_state = State(np.copy(state.position), np.copy(state.velocity), np.copy(state.force))
+        intermediate_state.position += intermediate_state.velocity * self.time_step
+        intermediate_state.velocity += intermediate_state.force * self.time_step
+        self.reset_forces(intermediate_state)
+        self.apply_forces(intermediate_state)
+        return intermediate_state
+
     def integrate(self, state: State):
         # Update forces of the current state before integration
         self.apply_forces(state)
 
         # Compute intermediate state using Euler step
-        intermediate_state = State(np.copy(state.position), np.copy(state.velocity), np.copy(state.force))
-        intermediate_state.position += intermediate_state.velocity * self.time_step
-        intermediate_state.velocity += intermediate_state.force * self.time_step
-        self.reset_forces(intermediate_state)
-
-        # Update forces of intermediate state at new positions
-        self.apply_forces(intermediate_state)
+        intermediate_state = self.compute_intermediate_state(state)
 
         # Update original state using average of initial and intermediate forces and velocities
         state.position += 0.5 * self.time_step * (state.velocity + intermediate_state.velocity)
         state.velocity += 0.5 * self.time_step * (state.force + intermediate_state.force)
         self.reset_forces(state)
 # %%
+class Runge_kutta(Integrator):
+    def compute_intermediate_state(self, state: State, slope: State, time_step: float):
+        intermediate_state = State(np.copy(state.position), np.copy(state.velocity), np.copy(state.force))
+        intermediate_state.position += slope.velocity * time_step
+        intermediate_state.velocity += slope.force * time_step
+        self.reset_forces(intermediate_state)
+        self.apply_forces(intermediate_state)
+        return intermediate_state
+        
+    def integrate(self, state: State):
+        # Update forces of the current state before integration
+        self.apply_forces(state)
+
+        # Compute intermediate states
+        slope_1 = State(np.copy(state.position), np.copy(state.velocity), np.copy(state.force))
+        slope_2 = self.compute_intermediate_state(state, slope_1, 0.5 * self.time_step)
+        slope_3 = self.compute_intermediate_state(state, slope_2, 0.5 * self.time_step)
+        slope_4 = self.compute_intermediate_state(state, slope_3, self.time_step)
+
+        # Update original state using weighted average of forces and velocities
+        state.position += (self.time_step / 6.0) * (slope_1.velocity + 2 * slope_2.velocity + 2 * slope_3.velocity + slope_4.velocity)
+        state.velocity += (self.time_step / 6.0) * (slope_1.force + 2 * slope_2.force + 2 * slope_3.force + slope_4.force)
+        self.reset_forces(state)
