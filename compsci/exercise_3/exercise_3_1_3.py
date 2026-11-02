@@ -10,9 +10,8 @@ going through the entire development cycle.
 # %%
 import numpy as np
 
-from compsci.exercise_3.exercise_3_1_2 import apply_lennard_jones_forces_to_particles
+from compsci.exercise_3.interaction import apply_lennard_jones_forces_to_particles
 from compsci.exercise_3.data import State
-from compsci.exercise_3.util import compute_phase_distance
 # %%
 class Integrator_explicit:
     def __init__(self, time_step: float):
