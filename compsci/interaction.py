@@ -19,7 +19,10 @@ def compute_lennard_jones_radial_force(distance: float):
 # %%
 def apply_harmonic_oscillator_forces_to_particles(state: State):
     for idx in range(len(state.position)):
-        state.force[idx] += compute_harmonic_oscillator_force(state.position[idx])
+        state.force[idx] += compute_harmonic_oscillator_single_particle_force(state.position[idx])
 
-def compute_harmonic_oscillator_force(position: float):
+def compute_harmonic_oscillator_single_particle_force(position: float):
     return -position
+
+def compute_harmonic_oscillator_many_particle_potential_energy(state: State):
+    return 0.5 * np.sum(state.position**2)
