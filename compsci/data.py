@@ -1,5 +1,8 @@
 # %%
 import numpy as np
+from collections.abc import Callable
+
+from compsci.analysis import compute_kinetic_energy
 # %%
 class State:
     def __init__(self, position: np.ndarray, velocity: np.ndarray, force = None):
@@ -35,3 +38,6 @@ class Trajectory:
 
     def get_forces(self):
         return np.array([state.force for state in self.states])
+
+    def get_total_energies(self, potential_energy_function: Callable[[State], float]):
+        return np.array([compute_kinetic_energy(state.velocity) + potential_energy_function(state) for state in self.states])
