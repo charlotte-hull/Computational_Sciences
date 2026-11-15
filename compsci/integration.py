@@ -1,19 +1,21 @@
 # %%
+from collections.abc import Callable
+
 import numpy as np
 
-from compsci.exercise_3.interaction import apply_lennard_jones_forces_to_particles
-from compsci.exercise_3.data import State
-from compsci.exercise_3.util import compute_phase_distance
+from compsci.data import State
+from compsci.util import compute_phase_distance
 # %%
 class Integrator_explicit:
-    def __init__(self, time_step: float):
+    def __init__(self, time_step: float, apply: Callable[[State], None]):
         self.time_step = time_step
+        self.apply = apply
 
     def integrate(self, state: State):
         raise NotImplementedError("Integrator subclasses must implement the integrate method.")
 
     def apply_forces(self, state: State):
-        apply_lennard_jones_forces_to_particles(state)
+        self.apply(state)
 
     def reset_forces(self, state: State):
         state.force.fill(0)  # Reset forces after integration
@@ -70,20 +72,12 @@ class Runge_kutta(Integrator_explicit):
         state.velocity += (self.time_step / 6.0) * (slope_1.force + 2 * slope_2.force + 2 * slope_3.force + slope_4.force)
         self.reset_forces(state)
 # %%
-class Integrator_implicit:
-    def __init__(self, time_step: float, tolerance: float, max_iterations: int = 10):
+class Integrator_implicit(Integrator_explicit):
+    def __init__(self, time_step: float, apply: Callable[[State], None], tolerance: float = 10e-06, max_iterations: int = 10):
         self.time_step = time_step
         self.tolerance = tolerance
         self.max_iterations = max_iterations
-
-    def integrate(self, state: State):
-        raise NotImplementedError("Integrator subclasses must implement the integrate method.")
-
-    def apply_forces(self, state: State):
-        apply_lennard_jones_forces_to_particles(state)
-
-    def reset_forces(self, state: State):
-        state.force.fill(0)  # Reset forces after integration
+        self.apply = apply
 
 class Implicit_euler(Integrator_implicit):
     def compute_intermediate_state(self, state: State):
