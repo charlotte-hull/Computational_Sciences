@@ -6,13 +6,16 @@ import numpy as np
 from compsci.data import State
 from compsci.util import compute_phase_distance
 # %%
-class Integrator_explicit:
-    def __init__(self, time_step: float, apply: Callable[[State], None]):
+class Integrator:
+    def __init__(self, time_step: float):
         self.time_step = time_step
-        self.apply = apply
 
     def integrate(self, state: State):
         raise NotImplementedError("Integrator subclasses must implement the integrate method.")
+class Integrator_explicit(Integrator):
+    def __init__(self, time_step: float, apply: Callable[[State], None]):
+        super().__init__(time_step)
+        self.apply = apply
 
     def apply_forces(self, state: State):
         self.apply(state)
@@ -74,11 +77,9 @@ class Runge_kutta(Integrator_explicit):
 # %%
 class Integrator_implicit(Integrator_explicit):
     def __init__(self, time_step: float, apply: Callable[[State], None], tolerance: float = 10e-06, max_iterations: int = 10):
-        self.time_step = time_step
+        super().__init__(time_step, apply)
         self.tolerance = tolerance
         self.max_iterations = max_iterations
-        self.apply = apply
-
 class Implicit_euler(Integrator_implicit):
     def compute_intermediate_state(self, state: State):
         intermediate_state = State(np.copy(state.position), np.copy(state.velocity), np.copy(state.force))

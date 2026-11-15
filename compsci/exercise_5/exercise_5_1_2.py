@@ -4,16 +4,14 @@ import matplotlib.pyplot as plt
 
 from compsci.data import State, Trajectory
 from compsci.interaction import apply_harmonic_oscillator_forces_to_particles, compute_harmonic_oscillator_many_particle_potential_energy
-from compsci.integration import Explicit_euler, Heuns_method, Runge_kutta, Implicit_euler, Integrator_explicit
+from compsci.integration import Explicit_euler, Heuns_method, Runge_kutta, Implicit_euler, Integrator
 # %%
-class AnalyticalIntegrator_harmonicOscillator(Integrator_explicit):
-    def __init__(self, initial_state: State):
-        self.initial_state = State(initial_state.position, initial_state.velocity)
-
-    def get_state(self, time):
-        position = self.initial_state.position * np.cos(time) + self.initial_state.velocity * np.sin(time)
-        velocity = -self.initial_state.position * np.sin(time) + self.initial_state.velocity * np.cos(time)
-        return State(position, velocity)
+class Integrator_harmonicOscillator_analytical(Integrator):
+    def integrate(self, state: State):
+        position = state.position * np.cos(self.time_step) + state.velocity * np.sin(self.time_step)
+        velocity = -state.position * np.sin(self.time_step) + state.velocity * np.cos(self.time_step)
+        state.position = position
+        state.velocity = velocity
 # %%
 class Config():
     def __init__(self):
@@ -31,7 +29,7 @@ def run_simulation(config: Config):
     state_ie = State(config.positions, config.velocities)
 
     # initialize integrator
-    generator_ana = AnalyticalIntegrator_harmonicOscillator(state_ana)
+    integrator_ana = Integrator_harmonicOscillator_analytical(config.time_step)
     integrator_ee = Explicit_euler(config.time_step, apply_harmonic_oscillator_forces_to_particles)
     integrator_heun = Heuns_method(config.time_step, apply_harmonic_oscillator_forces_to_particles)
     integrator_rk = Runge_kutta(config.time_step, apply_harmonic_oscillator_forces_to_particles)
@@ -49,7 +47,7 @@ def run_simulation(config: Config):
         print("step =", step, end='\r')
 
         # integrate state
-        state_ana = generator_ana.get_state(step * config.time_step)
+        integrator_ana.integrate(state_ana)
         integrator_ee.integrate(state_ee)
         integrator_heun.integrate(state_heun)
         integrator_rk.integrate(state_rk)
