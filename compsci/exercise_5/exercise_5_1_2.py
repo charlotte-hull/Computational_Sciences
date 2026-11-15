@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 from compsci.data import State, Trajectory
 from compsci.interaction import apply_harmonic_oscillator_forces_to_particles, compute_harmonic_oscillator_many_particle_potential_energy
-from compsci.integration import Explicit_euler, Heuns_method, Runge_kutta, Implicit_euler, Integrator
+from compsci.integration import Explicit_euler, Heuns_method, Runge_kutta, Implicit_euler, Störmer_verlet, Integrator
 # %%
 class Integrator_harmonicOscillator_analytical(Integrator):
     def integrate(self, state: State):
@@ -27,6 +27,7 @@ def run_simulation(config: Config):
     state_heun = State(config.positions, config.velocities)
     state_rk = State(config.positions, config.velocities)
     state_ie = State(config.positions, config.velocities)
+    state_sv = State(config.positions, config.velocities)
 
     # initialize integrator
     integrator_ana = Integrator_harmonicOscillator_analytical(config.time_step)
@@ -34,6 +35,7 @@ def run_simulation(config: Config):
     integrator_heun = Heuns_method(config.time_step, apply_harmonic_oscillator_forces_to_particles)
     integrator_rk = Runge_kutta(config.time_step, apply_harmonic_oscillator_forces_to_particles)
     integrator_ie = Implicit_euler(config.time_step, apply_harmonic_oscillator_forces_to_particles)
+    integrator_sv = Störmer_verlet(config.time_step, apply_harmonic_oscillator_forces_to_particles)
 
     # initialize data container to store trajectory
     trajectory_ana = Trajectory(state_ana)
@@ -41,6 +43,7 @@ def run_simulation(config: Config):
     trajectory_heun = Trajectory(state_heun)
     trajectory_rk = Trajectory(state_rk)
     trajectory_ie = Trajectory(state_ie)
+    trajectory_sv = Trajectory(state_sv)
 
     # main simulation loop
     for step in range(config.total_steps):
@@ -52,6 +55,7 @@ def run_simulation(config: Config):
         integrator_heun.integrate(state_heun)
         integrator_rk.integrate(state_rk)
         integrator_ie.integrate(state_ie)
+        integrator_sv.integrate(state_sv)
 
         # save current state to trajectory
         trajectory_ana.append(State(state_ana.position, state_ana.velocity))
@@ -59,12 +63,13 @@ def run_simulation(config: Config):
         trajectory_heun.append(State(state_heun.position, state_heun.velocity, state_heun.force))
         trajectory_rk.append(State(state_rk.position, state_rk.velocity, state_rk.force))
         trajectory_ie.append(State(state_ie.position, state_ie.velocity, state_ie.force))
+        trajectory_sv.append(State(state_sv.position, state_sv.velocity, state_sv.force))
 
-    return trajectory_ana, trajectory_ee, trajectory_heun, trajectory_rk, trajectory_ie
+    return trajectory_ana, trajectory_ee, trajectory_heun, trajectory_rk, trajectory_ie, trajectory_sv
 # %%
 if __name__ == "__main__":
     config = Config()
-    trajectory_ana, trajectory_ee, trajectory_heun, trajectory_rk, trajectory_ie = run_simulation(config)
+    trajectory_ana, trajectory_ee, trajectory_heun, trajectory_rk, trajectory_ie, trajectory_sv = run_simulation(config)
     time_grid = np.arange(config.total_steps + 1) * config.time_step
 # %%
     # create first figure with trajectory data
@@ -77,6 +82,7 @@ if __name__ == "__main__":
     plt.plot(time_grid, trajectory_heun.get_positions()[:, 0, 0], label="Heun's Method")
     plt.plot(time_grid, trajectory_rk.get_positions()[:, 0, 0], label="Runge-Kutta")
     plt.plot(time_grid, trajectory_ie.get_positions()[:, 0, 0], label="Implicit Euler")
+    plt.plot(time_grid, trajectory_sv.get_positions()[:, 0, 0], label="Störmer-Verlet")
     plt.xlabel(r'Time in $\tau$')
     plt.ylabel(r'Position in $\sigma$')
 
@@ -87,6 +93,7 @@ if __name__ == "__main__":
     plt.plot(time_grid, trajectory_heun.get_velocities()[:, 0, 0], label="Heun's Method")
     plt.plot(time_grid, trajectory_rk.get_velocities()[:, 0, 0], label="Runge-Kutta")
     plt.plot(time_grid, trajectory_ie.get_velocities()[:, 0, 0], label="Implicit Euler")
+    plt.plot(time_grid, trajectory_sv.get_velocities()[:, 0, 0], label="Störmer-Verlet")
     plt.xlabel(r'Time in $\tau$')
     plt.ylabel(r'Velocity in $\sigma / \tau$')
 
@@ -97,6 +104,7 @@ if __name__ == "__main__":
     plt.plot(trajectory_heun.get_positions()[:, 0, 0], trajectory_heun.get_velocities()[:, 0, 0], label="Heun's Method")
     plt.plot(trajectory_rk.get_positions()[:, 0, 0], trajectory_rk.get_velocities()[:, 0, 0], label="Runge-Kutta")
     plt.plot(trajectory_ie.get_positions()[:, 0, 0], trajectory_ie.get_velocities()[:, 0, 0], label="Implicit Euler")
+    plt.plot(trajectory_sv.get_positions()[:, 0, 0], trajectory_sv.get_velocities()[:, 0, 0], label="Störmer-Verlet")   
     plt.xlabel(r'Position in $\sigma$')
     plt.ylabel(r'Velocity in $\sigma / \tau$')
 
@@ -108,6 +116,7 @@ if __name__ == "__main__":
     plt.plot(time_grid, trajectory_heun.get_total_energies(potential), label="Heun's Method")
     plt.plot(time_grid, trajectory_rk.get_total_energies(potential), label="Runge-Kutta")
     plt.plot(time_grid, trajectory_ie.get_total_energies(potential), label="Implicit Euler")
+    plt.plot(time_grid, trajectory_sv.get_total_energies(potential), label="Störmer-Verlet")
     plt.xlabel(r'Time in $\tau$')
     plt.ylabel(r'Energy in $\epsilon$')
     plt.legend()
