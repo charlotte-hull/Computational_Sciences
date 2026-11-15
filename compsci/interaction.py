@@ -1,7 +1,7 @@
 # %%
 import numpy as np
 
-from compsci.exercise_3.data import State
+from compsci.data import State
 #%%
 def apply_lennard_jones_forces_to_particles(state: State):
     for idx in range(len(state.position)):
@@ -17,3 +17,9 @@ def apply_lennard_jones_forces_to_particles(state: State):
 def compute_lennard_jones_radial_force(distance: float):
     return 24 * ((2 / distance**13) - (1 / distance**7))
 # %%
+def apply_harmonic_oscillator_forces_to_particles(state: State):
+    for idx in range(len(state.position)):
+        state.force[idx] += compute_harmonic_oscillator_force(state.position[idx])
+
+def compute_harmonic_oscillator_force(position: float):
+    return -position
