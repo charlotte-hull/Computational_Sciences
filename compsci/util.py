@@ -1,7 +1,7 @@
 # %%
 import numpy as np
 
-from compsci.exercise_3.data import State
+from compsci.data import State
 # %%
 def compute_phase_distance(state1: State, state2: State):
     position_diff = state1.position - state2.position
