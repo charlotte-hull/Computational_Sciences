@@ -12,13 +12,13 @@ does that happen?
 import numpy as np
 import matplotlib.pyplot as plt
 
-from compsci.exercise_3.integration import Explicit_euler 
-from compsci.exercise_3.integration import Heuns_method
-from compsci.exercise_3.integration import Runge_kutta
-from compsci.exercise_3.integration import Implicit_euler
+from compsci.integration import Explicit_euler 
+from compsci.integration import Heuns_method
+from compsci.integration import Runge_kutta
+from compsci.integration import Implicit_euler
 
-from compsci.exercise_3.util import compute_phase_distance as phase
-from compsci.exercise_3.data import State
+from compsci.util import compute_phase_distance as phase
+from compsci.data import State
 
 
 dt=0.01
